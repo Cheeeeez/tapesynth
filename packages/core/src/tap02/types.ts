@@ -20,7 +20,8 @@ export type NetlistErrorCode =
   | 'ref-pin-mismatch'
   | 'ref-unresolved'
   | 'size-overflow'
-  | 'ref-not-flattened';
+  | 'ref-not-flattened'
+  | 'import-mismatch';
 
 export class NetlistError extends Error {
   code: NetlistErrorCode;
