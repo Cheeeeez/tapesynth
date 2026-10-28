@@ -1,0 +1,15 @@
+{
+  "name": "@tapesynth/cli",
+  "version": "0.1.0",
+  "license": "MIT",
+  "type": "module",
+  "bin": { "tapesynth": "./dist/index.js" },
+  "dependencies": {
+    "@tapesynth/core": "0.1.0",
+    "@tapesynth/synth": "0.1.0",
+    "@tapekit/kernel": "file:../../vendor/TapeKit/kernel",
+    "commander": "^12.1.0",
+    "dotenv": "^16.4.5",
+    "viem": "^2.57.0"
+  }
+}

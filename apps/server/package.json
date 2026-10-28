@@ -1,0 +1,16 @@
+{
+  "name": "@tapesynth/server",
+  "version": "0.1.0",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "@tapesynth/core": "0.1.0",
+    "@tapesynth/synth": "0.1.0",
+    "@fastify/cors": "^10.0.0",
+    "@fastify/rate-limit": "^10.0.0",
+    "better-sqlite3": "^11.5.0",
+    "fastify": "^5.0.0",
+    "viem": "^2.57.0"
+  },
+  "devDependencies": { "@types/better-sqlite3": "^7.6.11" }
+}
