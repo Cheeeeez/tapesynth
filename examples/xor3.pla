@@ -1,0 +1,10 @@
+# 3-input XOR (odd parity)
+.i 3
+.o 1
+.ilb a b c
+.ob p
+100 1
+010 1
+001 1
+111 1
+.e
