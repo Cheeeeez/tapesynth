@@ -8,8 +8,8 @@
   "engines": { "node": ">=22" },
   "workspaces": ["packages/*", "apps/*"],
   "scripts": {
-    "build": "tsc -b packages/core packages/synth packages/cli apps/server && npm -w @tapesynth/web run build",
-    "build:libs": "tsc -b packages/core packages/synth packages/cli apps/server",
+    "build": "npm run build:libs && npm -w @tapesynth/web run build",
+    "build:libs": "tsc -b packages/core packages/synth packages/cli apps/server && chmod +x packages/cli/dist/index.js",
     "test": "vitest run",
     "lint": "tsc -b --noEmit false packages/core packages/synth packages/cli apps/server && tsc --noEmit -p apps/web"
   },

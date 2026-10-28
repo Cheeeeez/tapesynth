@@ -31,9 +31,16 @@ export type CandidateReport = {
 
 export type SynthResult = TsynFile & { candidates: CandidateReport[]; warnings: string[]; log: string };
 
+/**
+ * ABC mapping candidates. `default` is plain area-oriented NAND mapping. The others are
+ * delay-oriented flows (measured: 2x lower PoD cost C on popcount8 / adder8 / spend_policy than
+ * `default`; `abc -g NAND -D 1` turned out to be a no-op, so it is not used).
+ */
 const CANDIDATES: { name: string; abc: string }[] = [
   { name: 'default', abc: 'abc -g NAND' },
-  { name: 'delay', abc: 'abc -g NAND -D 1' },
+  { name: 'delay', abc: 'abc -g NAND -script "+strash;dch;map"' },
+  { name: 'nf', abc: 'abc -g NAND -script "+strash;&get -n;&dch -f;&nf;&put"' },
+  { name: 'dc2map', abc: 'abc -g NAND -script "+strash;dc2;dc2;balance;dch;map"' },
 ];
 
 const script = (top: string, abc: string) => `read_verilog -sv design.v
@@ -135,7 +142,7 @@ export async function synthesize(req: SynthRequest): Promise<SynthResult> {
   let preJson: YosysJson | null = null;
   let pins0: Pins | null = null;
 
-  const cands = req.tier === 'free' ? [req.objective === 'depth' ? CANDIDATES[1]! : CANDIDATES[0]!] : CANDIDATES;
+  const cands = req.tier === 'free' ? [req.objective === 'area' ? CANDIDATES[0]! : CANDIDATES[1]!] : CANDIDATES;
 
   // stage 0
   let lastErr: SynthError | null = null;

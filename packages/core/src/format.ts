@@ -3,7 +3,7 @@ import type { Metrics } from './metrics.js';
 import type { Pins } from './fromYosys.js';
 
 export type Verification = {
-  reference: 'pre-abc' | 'pla' | 'original-netlist';
+  reference: 'pre-abc' | 'pla' | 'original-netlist' | 'onchain';
   method: 'exhaustive' | 'random';
   vectors: number;
   sequences: number;
@@ -16,7 +16,7 @@ export type SynthInfo = {
   yosys: string | null;
   objective: 'area' | 'depth' | 'pod';
   candidate: string;
-  sourceKind: 'verilog' | 'pla' | 'netlist';
+  sourceKind: 'verilog' | 'pla' | 'netlist' | 'onchain';
   sourceSha256: string;
 };
 
