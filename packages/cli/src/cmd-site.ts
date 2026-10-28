@@ -125,8 +125,8 @@ export async function cmdPublish(dir: string, o: { processor: string; id: string
   }
 
   const wc = walletClient();
-  const account = wc.account!.address;
-  if (owner.toLowerCase() !== account.toLowerCase()) throw new Error(`wallet ${account} is not the holder (${owner}) of circuit #${id}`);
+  const account = wc.account!;
+  if (owner.toLowerCase() !== account.address.toLowerCase()) throw new Error(`wallet ${account.address} is not the holder (${owner}) of circuit #${id}`);
 
   if (!opened) {
     console.log('opening container…');
@@ -161,7 +161,9 @@ export async function cmdPublish(dir: string, o: { processor: string; id: string
 const bytesHex = (b: Uint8Array): Hex => `0x${Buffer.from(b).toString('hex')}`;
 
 export async function cmdSiteVerify(name: string) {
-  const k = createKernel();
+  // XLAYER_RPC (e.g. a local fork) replaces the public node list for X Layer names, with a single-node quorum
+  const rpc = process.env.XLAYER_RPC;
+  const k = createKernel(rpc ? { rpcUrls: { xlayer: [rpc] }, quorum: 1 } : undefined);
   const res = await k.resolve(name, { fresh: true });
   console.log(`${name}: ${res.status}${res.container ? `  container ${res.container}` : ''}${res.paid !== undefined ? `  activated=${res.paid}` : ''}`);
   if (res.status !== 'ok') {
