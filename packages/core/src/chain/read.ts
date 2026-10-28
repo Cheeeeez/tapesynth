@@ -72,3 +72,13 @@ export async function importCircuit(pc: PublicClient, cpu: Address, id: bigint):
     metrics: metrics(elements, c.nIn, c.nOut), hadRefs,
   };
 }
+
+/** Processor number P such that factory.cpuAt(P) = cpu (scans backwards, newest first); null if `cpu` is not in the factory. */
+export async function processorNumber(pc: PublicClient, cpu: Address): Promise<number | null> {
+  const count = await pc.readContract({ address: FACTORY, abi: factoryAbi, functionName: 'cpuCount' });
+  for (let n = count - 1n; n >= 0n; n--) {
+    const a = await pc.readContract({ address: FACTORY, abi: factoryAbi, functionName: 'cpuAt', args: [n] });
+    if (a.toLowerCase() === cpu.toLowerCase()) return Number(n);
+  }
+  return null;
+}

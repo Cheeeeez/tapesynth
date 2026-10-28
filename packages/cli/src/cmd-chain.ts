@@ -2,7 +2,7 @@ import { mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 import type { PublicClient } from 'viem';
 import {
-  createProcessor, executeTapeout, planTapeout, verifyOnChain, factoryAbi, FACTORY, OKLINK_TX,
+  createProcessor, executeTapeout, planTapeout, processorNumber, verifyOnChain, OKLINK_TX,
   type TapeoutPlan, type VerifyOnChainResult,
 } from '@tapesynth/core/chain';
 import {
@@ -63,15 +63,6 @@ export async function cmdTapeout(
     console.log(`recorded in ${path}`);
   }
   if (v.mismatches.length) process.exitCode = 1;
-}
-
-async function processorNumber(pc: PublicClient, cpu: string): Promise<number | null> {
-  const count = await pc.readContract({ address: FACTORY, abi: factoryAbi, functionName: 'cpuCount' });
-  for (let n = count - 1n; n >= 0n; n--) {
-    const a = await pc.readContract({ address: FACTORY, abi: factoryAbi, functionName: 'cpuAt', args: [n] });
-    if (a.toLowerCase() === cpu.toLowerCase()) return Number(n);
-  }
-  return null;
 }
 
 function report(v: VerifyOnChainResult) {

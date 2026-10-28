@@ -1,5 +1,5 @@
 import { createPublicClient, createWalletClient, custom, http, type Address, type PublicClient, type WalletClient } from 'viem';
-import { DEFAULT_RPC, factoryAbi, FACTORY, resolveProcessor, xLayerChain } from '@tapesynth/core/chain';
+import { DEFAULT_RPC, processorNumber as findProcessorNumber, resolveProcessor, xLayerChain } from '@tapesynth/core/chain';
 
 export const XLAYER_HEX_ID = '0xc4'; // 196
 
@@ -39,12 +39,5 @@ async function ensureXLayer(eth: EthereumProvider) {
 /** Processor address or number (number goes through factory.cpuAt). */
 export const parseProcessor = (ref: string): Promise<Address> => resolveProcessor(publicClient, ref.trim());
 
-/** Processor number P such that factory.cpuAt(P) = cpu (scans backwards; newest first). */
-export async function processorNumber(cpu: Address): Promise<number | null> {
-  const count = await publicClient.readContract({ address: FACTORY, abi: factoryAbi, functionName: 'cpuCount' });
-  for (let n = count - 1n; n >= 0n; n--) {
-    const a = await publicClient.readContract({ address: FACTORY, abi: factoryAbi, functionName: 'cpuAt', args: [n] });
-    if (a.toLowerCase() === cpu.toLowerCase()) return Number(n);
-  }
-  return null;
-}
+/** Processor number P such that factory.cpuAt(P) = cpu. */
+export const processorNumber = (cpu: Address): Promise<number | null> => findProcessorNumber(publicClient, cpu);

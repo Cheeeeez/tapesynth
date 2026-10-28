@@ -2,6 +2,7 @@
 import { Command } from 'commander';
 import { cmdImport, cmdInfo, cmdOptimize, cmdSim, cmdSynth } from './cmd-synth.js';
 import { cmdProcessorCreate, cmdTapeout, cmdVerify } from './cmd-chain.js';
+import { cmdPublish, cmdSiteVerify } from './cmd-site.js';
 
 const program = new Command();
 program.name('tapesynth').description('Verilog / PLA / on-chain circuit → verified TAP-02 netlist → TapeOut on X Layer').version('0.1.0');
@@ -58,5 +59,13 @@ program.command('tapeout <file>').description('tape out a .tsyn.json on X Layer,
 
 program.command('verify <cpu> <id>').description('compare an on-chain circuit with a .tsyn.json (netlist bytes + eval/step)')
   .requiredOption('--against <file>').action(run(cmdVerify));
+
+program.command('publish <dir>').description('upload a static site to DeWEB (SiteRegistry) under a circuit\'s container and activate its name')
+  .requiredOption('--processor <addr|n>').requiredOption('--id <n>', 'circuit id that holds the site')
+  .option('--months <n>', 'months of name activation (only if not live yet)', '6')
+  .option('--dry-run', 'print the plan and a gas estimate only').action(run(cmdPublish));
+
+program.command('site').description('on-chain site tools').command('verify <name>')
+  .description('read every file of <id>.2.<P>.tape through the TapeKit kernel and check it against the chain').action(run(cmdSiteVerify));
 
 await program.parseAsync(process.argv);
